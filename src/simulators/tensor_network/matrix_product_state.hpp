@@ -129,10 +129,11 @@ public:
   void change_position(uint_t src, uint_t dst);
   
   cmatrix_t density_matrix(const reg_t &qubits) const;
+  void Apply_pauli_array(const reg_t &qubits, const string &matrices);
 
   //  double Expectation_value(const vector<uint_t> &indexes, const string &matrices);
-  double Expectation_value(const reg_t &qubits, const string &matrices) const;
-  double Expectation_value(const reg_t &qubits, const cmatrix_t &M) const;
+  double Expectation_value(const reg_t &qubits, const string &matrices) ;
+  double Expectation_value(const reg_t &qubits, const cmatrix_t &M) ;
 
   //----------------------------------------------------------------	
   // function name: print

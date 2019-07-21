@@ -1,4 +1,5 @@
 /**
+	iubits.print(cout);
  * Copyright 2018, IBM.
  *
  * This source code is licensed under the Apache License, Version 2.0 found in
@@ -294,12 +295,50 @@ cmatrix_t MPS::density_matrix(const reg_t &qubits) const
   return rho;
 }
 
-double MPS::Expectation_value(const reg_t &qubits, const string &matrices) const
-{
-  // ***** Assuming ascending sorted qubits register *****
-  cmatrix_t rho = density_matrix(qubits);
+void MPS::Apply_pauli_array(const reg_t &qubits, const string &matrices){
+  
+  uint_t matrix_index = 0;
+
+  for (uint_t index : qubits){
+	if (matrices[matrix_index] == 'X'){
+		apply_x(index);
+	}
+	if (matrices[matrix_index] == 'Y'){
+		apply_y(index);
+	}
+	if (matrices[matrix_index] == 'Z'){
+		apply_z(index);
+	}
+	if (matrices[matrix_index] == 'I')
+	{;}
+  	matrix_index++;
+  }
+ 
+}
+
+double MPS::Expectation_value(const reg_t &qubits, const string &matrices) {
+
+  complex_t res = 0;
   string matrices_reverse = matrices;
   reverse(matrices_reverse.begin(), matrices_reverse.end());
+
+  if(num_qubits_ < 2 * (std::end(qubits) - std::begin(qubits))){
+  cout << "State vector" << endl;
+
+  MPS_Tensor state_vector_before = state_vec(0, num_qubits_-1);
+  Apply_pauli_array(qubits, matrices_reverse);
+  MPS_Tensor state_vector_after = state_vec(0, num_qubits_-1);
+  Apply_pauli_array(qubits, matrices_reverse);
+
+  uint_t length = 1ULL << num_qubits_;   // length = pow(2, num_qubits_)
+  for (int_t i=0; i< static_cast<int_t>(length); i++){
+	res += state_vector_after.get_data(i)(0,0) * conj(state_vector_before.get_data(i)(0,0));
+  }
+
+  } else {
+  
+  // ***** Assuming ascending sorted qubits register *****
+  cmatrix_t rho = density_matrix(qubits);
   cmatrix_t M(1), temp;
   M(0,0) = complex_t(1);
   for(const char& gate : matrices_reverse)
@@ -315,14 +354,15 @@ double MPS::Expectation_value(const reg_t &qubits, const string &matrices) const
     M = AER::Utils::tensor_product(M, temp);
   }
   // Trace(rho*M). not using methods for efficiency
-  complex_t res = 0;
   for (uint_t i = 0; i < M.GetRows(); i++)
     for (uint_t j = 0; j < M.GetRows(); j++)
       res += M(i,j)*rho(j,i);
+ }
   return real(res);
+
 }
 
-double MPS::Expectation_value(const reg_t &qubits, const cmatrix_t &M) const
+double MPS::Expectation_value(const reg_t &qubits, const cmatrix_t &M) 
 {
   // ***** Assuming ascending sorted qubits register *****
   cmatrix_t rho = density_matrix(qubits);

@@ -421,6 +421,8 @@ void State::apply_ops(const std::vector<Operations::Op> &ops,
                                     op.name + "\'.");
     }
   }
+
+
 }
 
 //=========================================================================
@@ -566,6 +568,13 @@ void State::apply_gate(const Operations::Op &op) {
       throw std::invalid_argument(
         "TensorNetwork::State::invalid gate instruction \'" + op.name + "\'.");
   }
+
+
+  //Print For checkup
+//  qreg_.print(cout);
+//   cout << endl;
+
+
 
 }
 
