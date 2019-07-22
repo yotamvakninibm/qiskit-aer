@@ -443,15 +443,17 @@ void State::snapshot_pauli_expval(const Operations::Op &op,
   //Compute expval components
   double expval = 0;
   string pauli_matrices;
+  complex_t coeff;
 
   for (const auto &param : op.params_expval_pauli) {
+    coeff = param.first;
     pauli_matrices += param.second;
   }
   expval = qreg_.Expectation_value(op.qubits, pauli_matrices);
     // Pauli expectation values should always be real for a valid state
     // so we truncate the imaginary part
   //expval += coeff * std::real(BaseState::qreg_.inner_product());
-  data.add_singleshot_snapshot("expectation_value", op.string_params[0], expval);
+  data.add_singleshot_snapshot("expectation_value", op.string_params[0], coeff*expval);
   
   //qreg_.revert(false);
   // Revert to original state
