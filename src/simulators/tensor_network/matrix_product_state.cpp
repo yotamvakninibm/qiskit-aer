@@ -364,14 +364,30 @@ double MPS::Expectation_value(const reg_t &qubits, const string &matrices) {
 
 double MPS::Expectation_value(const reg_t &qubits, const cmatrix_t &M) 
 {
+  complex_t res = 0;
+
+  if(num_qubits_ < 2 * (std::end(qubits) - std::begin(qubits))){
+
+  MPS_Tensor state_vector_ = state_vec(0, num_qubits_-1);
+
+  uint_t length = 1ULL << num_qubits_;   // length = pow(2, num_qubits_)
+  for (int_t i=0; i< static_cast<int_t>(length); i++){
+  	for (int_t j=0; j< static_cast<int_t>(length); j++){
+	res += state_vector_.get_data(i)(0,0) * M(j,i) * conj(state_vector_.get_data(j)(0,0));
+      	}
+  }
+
+  } else {
+  
+
   // ***** Assuming ascending sorted qubits register *****
   cmatrix_t rho = density_matrix(qubits);
 
   // Trace(rho*M). not using methods for efficiency
-  complex_t res = 0;
   for (uint_t i = 0; i < M.GetRows(); i++)
     for (uint_t j = 0; j < M.GetRows(); j++)
       res += M(i,j)*rho(j,i);
+  }
   return real(res);
 }
 

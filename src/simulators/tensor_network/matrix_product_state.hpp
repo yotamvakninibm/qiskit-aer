@@ -206,6 +206,7 @@ protected:
   uint_t num_qubits_;
   vector<MPS_Tensor> q_reg_;
   vector<rvector_t> lambda_reg_;
+
   //-----------------------------------------------------------------------
   // Config settings
   //----------------------------------------------------------------------- 

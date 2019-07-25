@@ -448,7 +448,7 @@ void State::snapshot_pauli_expval(const Operations::Op &op,
   for (const auto &param : op.params_expval_pauli) {
     coeff = param.first;
     pauli_matrices = param.second;
-    expval = expval + coeff * qreg_.Expectation_value(op.qubits, pauli_matrices);
+    expval += coeff * qreg_.Expectation_value(op.qubits, pauli_matrices);
   }
     // Pauli expectation values should always be real for a valid state
     // so we truncate the imaginary part
