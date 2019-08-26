@@ -323,7 +323,6 @@ double MPS::Expectation_value(const reg_t &qubits, const string &matrices) {
   reverse(matrices_reverse.begin(), matrices_reverse.end());
 
   if(num_qubits_ < 2 * (std::end(qubits) - std::begin(qubits))){
-  cout << "State vector" << endl;
 
   MPS_Tensor state_vector_before = state_vec(0, num_qubits_-1);
   Apply_pauli_array(qubits, matrices_reverse);
